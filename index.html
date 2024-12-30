@@ -8,7 +8,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.5/shaka-player.ui.min.js"></script>
     <!-- Shaka Player UI compiled library default CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.12.5/controls.min.css">
-    <!-- Chromecast SDK (optional for Chromecast support) -->
     <style>
       #live-label {
         position: absolute;
@@ -43,14 +42,12 @@
       function getUrlParams() {
         const params = new URLSearchParams(window.location.search);
         return {
-          manifestUri: params.get('manifestUri'),
-          drmKeyId: params.get('drmKeyId'),
-          drmKey: params.get('drmKey')
+          manifestUri: params.get('manifestUri')
         };
       }
 
       async function init() {
-        const { manifestUri, drmKeyId, drmKey } = getUrlParams();
+        const { manifestUri } = getUrlParams();
 
         if (!manifestUri) {
           console.error('No manifestUri provided!');
@@ -62,23 +59,11 @@
         const controls = ui.getControls();
         const player = controls.getPlayer();
 
-        // DRM Configuration with ClearKey
-        const clearKeyConfig = {};
-        if (drmKeyId && drmKey) {
-          clearKeyConfig[drmKeyId] = drmKey;
-        }
-
         const config = {
           'controlPanelElements': ['play_pause', 'spacer', 'mute', 'quality', 'fullscreen']
         };
 
         ui.configure(config);
-
-        player.configure({
-          drm: {
-            clearKeys: clearKeyConfig
-          }
-        });
 
         window.player = player;
         window.ui = ui;
